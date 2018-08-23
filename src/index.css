@@ -61,6 +61,11 @@ body {
   border: none;
 }
 
+.ui.inverted.segment,
+.ui.primary.inverted.segment {
+  height: 100vh;
+}
+
 /*end home page styles*/
 
 /* navbar styles */
