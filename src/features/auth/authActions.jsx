@@ -23,10 +23,9 @@ export const registerUser = user => {
     const firestore = getFirestore();
     try {
       // Create the user in auth
-      let createdUser = await firebase.auth.createUserWithEmailAndPassword(
-        user.email,
-        user.password,
-      );
+      let createdUser = await firebase
+        .auth()
+        .createUserWithEmailAndPassword(user.email, user.password);
       console.log(createdUser);
       // Update the auth profile
       await createdUser.updateProfile({ displayName: user.displayName });
@@ -38,7 +37,9 @@ export const registerUser = user => {
       await firestore.set(`users/${createdUser.uid}`, { ...newUser });
       dispatch(closeModal());
     } catch (error) {
-      console.log(error);
+      throw new SubmissionError({
+        _error: error.message,
+      });
     }
   };
 };
