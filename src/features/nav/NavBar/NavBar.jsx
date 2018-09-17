@@ -6,7 +6,6 @@ import { NavLink, Link, withRouter } from "react-router-dom";
 import SignedOutMenu from "../Menus/SignedOutMenu";
 import SignedInMenu from "../Menus/SignedInMenu";
 import { openModal } from "../../modals/modalActions";
-import { logout } from "../../auth/authActions";
 
 class NavBar extends Component {
   handleSignIn = () => {
@@ -70,7 +69,6 @@ const mapStateToProps = state => {
 
 const actions = {
   openModal,
-  logout,
 };
 
 export default withRouter(
