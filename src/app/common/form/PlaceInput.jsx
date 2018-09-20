@@ -27,7 +27,9 @@ export default class PlaceInput extends Component {
       <Form.Field error={touched && !!error} width={width}>
         <Script
           onLoad={this.handleScriptLoad}
-          url="https://maps.googleapis.com/maps/api/js?key=GOOGLE_MAP_API_KEY&libraries=places"
+          url={`https://maps.googleapis.com/maps/api/js?key=${
+            process.env.REACT_APP_GOOGLE_MAP_API_KEY
+          }&libraries=places`}
         />
         {this.state.scriptLoaded && (
           <PlacesAutocomplete
