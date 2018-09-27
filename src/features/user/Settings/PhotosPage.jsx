@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import { firestoreConnect } from "react-redux-firebase";
+import { compose } from "redux";
 import {
   Image,
   Segment,
@@ -16,9 +18,28 @@ import Cropper from "react-cropper";
 import "cropperjs/dist/cropper.css";
 import { uploadProfileImage } from "../userActions";
 
+const query = ({ auth }) => {
+  return [
+    {
+      collection: "users",
+      doc: auth.uid,
+      subcollections: [{ collection: "photos" }],
+      storeAs: "photos",
+    },
+  ];
+};
+
 const actions = {
   uploadProfileImage,
 };
+
+const mapStateToProps = state => {
+  return {
+    auth: state.firebase.auth,
+    profile: state.firebase.profile,
+  };
+};
+
 class PhotosPage extends Component {
   state = {
     files: [],
@@ -153,7 +174,10 @@ class PhotosPage extends Component {
   }
 }
 
-export default connect(
-  null,
-  actions,
+export default compose(
+  connect(
+    mapStateToProps,
+    actions,
+  ),
+  firestoreConnect(auth => query(auth)),
 )(PhotosPage);
