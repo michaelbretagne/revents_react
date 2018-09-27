@@ -1,7 +1,5 @@
 import moment from "moment";
 import { toastr } from "react-redux-toastr";
-import PhotosPage from "./Settings/PhotosPage";
-// import { isLoaded, isEmpty } from "react-redux-firebase";
 
 export const updateProfile = user => {
   return async (dispatch, getState, { getFirebase }) => {

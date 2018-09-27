@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
 import {
   Image,
   Segment,
@@ -9,14 +10,39 @@ import {
   Card,
   Icon,
 } from "semantic-ui-react";
+import { toastr } from "react-redux-toastr";
 import Dropzone from "react-dropzone";
 import Cropper from "react-cropper";
 import "cropperjs/dist/cropper.css";
+import { uploadProfileImage } from "../userActions";
 
+const actions = {
+  uploadProfileImage,
+};
 class PhotosPage extends Component {
   state = {
     files: [],
     fileName: "",
+  };
+
+  uploadImage = async () => {
+    try {
+      await this.props.uploadProfileImage(
+        this.state.image,
+        this.state.fileName,
+      );
+      this.cancelCrop();
+      toastr.success("Success!", "Photo has been uploaded");
+    } catch (error) {
+      toastr.error("Oops", error.message);
+    }
+  };
+
+  cancelCrop = () => {
+    this.setState({
+      files: [],
+      image: {},
+    });
   };
 
   onDrop = files => {
@@ -80,10 +106,25 @@ class PhotosPage extends Component {
           <Grid.Column width={4}>
             <Header sub color="teal" content="Step 3 - Preview and Upload" />
             {this.state.files[0] && (
-              <Image
-                style={{ minHeight: "200px", minWidth: "200px" }}
-                src={this.state.cropResult}
-              />
+              <div>
+                <Image
+                  style={{ minHeight: "200px", minWidth: "200px" }}
+                  src={this.state.cropResult}
+                />
+                <Button.Group>
+                  <Button
+                    onClick={this.uploadImage}
+                    style={{ width: "100px" }}
+                    positive
+                    icon="check"
+                  />
+                  <Button
+                    onClick={this.cancelCrop}
+                    style={{ width: "100px" }}
+                    icon="close"
+                  />
+                </Button.Group>
+              </div>
             )}
           </Grid.Column>
         </Grid>
@@ -112,4 +153,7 @@ class PhotosPage extends Component {
   }
 }
 
-export default PhotosPage;
+export default connect(
+  null,
+  actions,
+)(PhotosPage);
