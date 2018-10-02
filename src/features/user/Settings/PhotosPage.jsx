@@ -16,7 +16,7 @@ import { toastr } from "react-redux-toastr";
 import Dropzone from "react-dropzone";
 import Cropper from "react-cropper";
 import "cropperjs/dist/cropper.css";
-import { uploadProfileImage, deletePhoto } from "../userActions";
+import { uploadProfileImage, deletePhoto, setMainPhoto } from "../userActions";
 
 const query = ({ auth }) => {
   return [
@@ -32,6 +32,7 @@ const query = ({ auth }) => {
 const actions = {
   uploadProfileImage,
   deletePhoto,
+  setMainPhoto,
 };
 
 const mapStateToProps = state => {
@@ -39,6 +40,7 @@ const mapStateToProps = state => {
     auth: state.firebase.auth,
     profile: state.firebase.profile,
     photos: state.firestore.ordered.photos,
+    loading: state.async.loading,
   };
 };
 
@@ -61,9 +63,17 @@ class PhotosPage extends Component {
     }
   };
 
-  handlePhotoDelete = photo => () => {
+  handlePhotoDelete = photo => async () => {
     try {
       this.props.deletePhoto(photo);
+    } catch (error) {
+      toastr.error("Oops", error.message);
+    }
+  };
+
+  handleSetMainPhoto = photo => async () => {
+    try {
+      this.props.setMainPhoto(photo);
     } catch (error) {
       toastr.error("Oops", error.message);
     }
@@ -100,7 +110,7 @@ class PhotosPage extends Component {
   };
 
   render() {
-    const { photos, profile } = this.props;
+    const { photos, profile, loading } = this.props;
     let filteredPhotos;
     if (photos) {
       filteredPhotos = photos.filter(photo => {
@@ -151,6 +161,7 @@ class PhotosPage extends Component {
                 />
                 <Button.Group>
                   <Button
+                    loading={loading}
                     onClick={this.uploadImage}
                     style={{ width: "100px" }}
                     positive
@@ -172,7 +183,7 @@ class PhotosPage extends Component {
 
         <Card.Group itemsPerRow={5}>
           <Card>
-            <Image src={profile.photoURL} />
+            <Image src={profile.photoURL || "/assets/user.png"} />
             <Button positive>Main Photo</Button>
           </Card>
           {photos &&
@@ -180,10 +191,15 @@ class PhotosPage extends Component {
               <Card key={photo.id}>
                 <Image src={photo.url} />
                 <div className="ui two buttons">
-                  <Button basic color="green">
+                  <Button
+                    onClick={this.handleSetMainPhoto(photo)}
+                    basic
+                    color="green"
+                  >
                     Main
                   </Button>
                   <Button
+                    disabled={loading}
                     onClick={this.handlePhotoDelete(photo)}
                     basic
                     icon="trash"
