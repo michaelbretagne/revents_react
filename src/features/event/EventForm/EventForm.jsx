@@ -1,8 +1,8 @@
 /*global google*/
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import { withFirestore } from "react-redux-firebase";
 import { reduxForm, Field } from "redux-form";
-import moment from "moment";
 import { geocodeByAddress, getLatLng } from "react-places-autocomplete";
 import Script from "react-load-script";
 import {
@@ -25,6 +25,16 @@ class EventForm extends Component {
     venueLatLng: {},
     scriptLoaded: false,
   };
+
+  async componentDidMount() {
+    const { firestore, match } = this.props;
+    let event = await firestore.get(`events/${match.params.id}`);
+    if (event.exists) {
+      this.setState({
+        venueLatLng: event.data().venueLatLng,
+      });
+    }
+  }
 
   handleScriptLoad = () => this.setState({ scriptLoaded: true });
 
@@ -51,7 +61,6 @@ class EventForm extends Component {
   };
 
   onFormSubmit = values => {
-    values.date = moment(values.date).format();
     values.venueLatLng = this.state.venueLatLng;
     if (this.props.initialValues.id) {
       this.props.updateEvent(values);
@@ -146,11 +155,10 @@ class EventForm extends Component {
   }
 }
 
-const mapStateToProps = (state, ownProps) => {
-  const eventId = ownProps.match.params.id;
+const mapStateToProps = state => {
   let event = {};
-  if (eventId && state.events.length > 0) {
-    event = state.events.filter(event => event.id === eventId)[0];
+  if (state.firestore.ordered.events && state.firestore.ordered.events[0]) {
+    event = state.firestore.ordered.events[0];
   }
   return { initialValues: event };
 };
@@ -183,11 +191,13 @@ const validate = combineValidators({
   date: isRequired("date"),
 });
 
-export default connect(
-  mapStateToProps,
-  actions,
-)(
-  reduxForm({ form: "eventForm", enableReinitialize: "true", validate })(
-    EventForm,
+export default withFirestore(
+  connect(
+    mapStateToProps,
+    actions,
+  )(
+    reduxForm({ form: "eventForm", enableReinitialize: "true", validate })(
+      EventForm,
+    ),
   ),
 );
