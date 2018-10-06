@@ -12,7 +12,7 @@ import {
   hasLengthGreaterThan,
 } from "revalidate";
 import { Segment, Form, Button, Grid, Header } from "semantic-ui-react";
-import { createEvent, updateEvent } from "../eventActions";
+import { createEvent, updateEvent, cancelToggle } from "../eventActions";
 import TextInput from "../../../app/common/form/TextInput";
 import TextArea from "../../../app/common/form/TextArea";
 import SelectInput from "../../../app/common/form/SelectInput";
@@ -72,7 +72,7 @@ class EventForm extends Component {
   };
 
   render() {
-    const { invalid, submitting, pristine } = this.props;
+    const { invalid, submitting, pristine, event, cancelToggle } = this.props;
     return (
       <Grid>
         <Script
@@ -147,6 +147,13 @@ class EventForm extends Component {
               <Button onClick={this.props.history.goBack} type="button">
                 Cancel
               </Button>
+              <Button
+                onClick={() => cancelToggle(!event.cancelled, event.id)}
+                type="button"
+                color={event.cancelled ? "green" : "red"}
+                floated="right"
+                content={event.cancelled ? "Reactivate event" : "Cancel event"}
+              />
             </Form>
           </Segment>
         </Grid.Column>
@@ -160,12 +167,16 @@ const mapStateToProps = state => {
   if (state.firestore.ordered.events && state.firestore.ordered.events[0]) {
     event = state.firestore.ordered.events[0];
   }
-  return { initialValues: event };
+  return {
+    initialValues: event,
+    event,
+  };
 };
 
 const actions = {
   createEvent,
   updateEvent,
+  cancelToggle,
 };
 
 const category = [
