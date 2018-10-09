@@ -8,18 +8,21 @@ import EventDetailedHeader from "./EventDetailedHeader";
 import EventDetailedInfo from "./EventDetailedInfo";
 import EventDetailedSidebar from "./EventDetailedSidebar";
 import { objectToArray } from "../../../app/common/util/helpers";
+import { goingToEvent } from "../../user/userActions";
 
 class EventDetailedPage extends Component {
   async componentDidMount() {
-    const { firestore, match, history } = this.props;
-    let event = await firestore.get(`events/${match.params.id}`);
-    if (!event.exists) {
-      history.push("/events");
-      toastr.error("Sorry", "Event not found");
-    }
+    const { firestore, match } = this.props;
+    await firestore.setListener(`events/${match.params.id}`);
   }
+
+  async componentWillUnmount() {
+    const { firestore, match } = this.props;
+    await firestore.unsetListener(`events/${match.params.id}`);
+  }
+
   render() {
-    const { event, auth } = this.props;
+    const { event, auth, goingToEvent } = this.props;
     const attendees =
       event && event.attendees && objectToArray(event.attendees);
     const isHost = event.hostUid === auth.uid;
@@ -31,6 +34,7 @@ class EventDetailedPage extends Component {
             event={event}
             isHost={isHost}
             isGoing={isGoing}
+            goingToEvent={goingToEvent}
           />
           <EventDetailedInfo event={event} />
           <EventDetailedChat />
@@ -54,4 +58,13 @@ const mapStateToProps = state => {
   };
 };
 
-export default withFirestore(connect(mapStateToProps)(EventDetailedPage));
+const actions = {
+  goingToEvent,
+};
+
+export default withFirestore(
+  connect(
+    mapStateToProps,
+    actions,
+  )(EventDetailedPage),
+);
