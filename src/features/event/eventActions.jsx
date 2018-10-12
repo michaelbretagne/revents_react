@@ -8,13 +8,7 @@ import {
 import { fetchSampleData } from "../../app/data/mockApi";
 import { createNewEvent } from "../../app/common/util/helpers";
 import moment from "moment";
-
-export const fetchEvents = events => {
-  return {
-    type: FETCH_EVENTS,
-    payload: events,
-  };
-};
+import firebase from "../../app/config/firebase";
 
 export const createEvent = event => {
   return async (dispatch, getState, { getFirestore }) => {
@@ -72,19 +66,24 @@ export const cancelToggle = (cancelled, eventId) => {
   };
 };
 
-export const deleteEvent = eventId => {
-  return {
-    type: DELETE_EVENT,
-    payload: { eventId },
-  };
-};
-
-export const loadEvents = () => {
-  return async dispatch => {
+export const getEventsForDashboard = () => {
+  return async (dispatch, getState) => {
+    let today = new Date(Date.now());
+    const firestore = firebase.firestore();
+    const eventsQuery = firestore
+      .collection("events")
+      .where("date", ">=", today);
     try {
       dispatch(asyncActionStart());
-      let events = await fetchSampleData();
-      dispatch(fetchEvents(events));
+      let querySnap = await eventsQuery.get();
+      let events = [];
+
+      for (let i = 0; i < querySnap.docs.length; i++) {
+        let evt = { ...querySnap.docs[i].data(), id: querySnap.docs[i].id };
+        events.push(evt);
+      }
+      console.log(querySnap);
+      dispatch({ type: FETCH_EVENTS, payload: { events } });
       dispatch(asyncActionFinish());
     } catch (error) {
       console.log(error);
