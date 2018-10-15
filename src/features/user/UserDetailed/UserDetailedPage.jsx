@@ -14,8 +14,12 @@ import { getUserEvents } from "../userActions";
 
 class UserDetailedPage extends Component {
   async componentDidMount() {
-    let events = await this.props.getUserEvents(this.props.userUid);
+    await this.props.getUserEvents(this.props.userUid);
   }
+
+  changeTab = (e, data) => {
+    this.props.getUserEvents(this.props.userUid, data.activeIndex);
+  };
 
   render() {
     const {
@@ -36,7 +40,11 @@ class UserDetailedPage extends Component {
         <UserDetailedDescription profile={profile} />
         <UserDetailedSidebar isCurrentUser={isCurrentUser} />
         {photos && photos.length > 0 && <UserDetailedPhotos photos={photos} />}
-        <UserDetailedEvents events={events} eventsLoading={eventsLoading} />
+        <UserDetailedEvents
+          events={events}
+          eventsLoading={eventsLoading}
+          changeTab={this.changeTab}
+        />
       </Grid>
     );
   }
