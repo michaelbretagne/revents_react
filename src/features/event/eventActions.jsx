@@ -1,11 +1,10 @@
 import { toastr } from "react-redux-toastr";
-import { DELETE_EVENT, FETCH_EVENTS } from "./eventConstants";
+import { FETCH_EVENTS } from "./eventConstants";
 import {
   asyncActionStart,
   asyncActionFinish,
   asyncActionError,
 } from "../async/asyncActions";
-import { fetchSampleData } from "../../app/data/mockApi";
 import { createNewEvent } from "../../app/common/util/helpers";
 import moment from "moment";
 import firebase from "../../app/config/firebase";
@@ -82,12 +81,12 @@ export const getEventsForDashboard = lastEvent => {
       let query;
       lastEvent
         ? (query = eventsRef
-            // .where("date", ">=", today)
+            .where("date", ">=", today)
             .orderBy("date")
             .startAfter(startAfter)
             .limit(2))
         : (query = eventsRef
-            // .where("date", ">=", today)
+            .where("date", ">=", today)
             .orderBy("date")
             .limit(2));
 
