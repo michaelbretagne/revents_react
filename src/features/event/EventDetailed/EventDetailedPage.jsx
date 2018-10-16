@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { withFirestore } from "react-redux-firebase";
+import { withFirestore, firebaseConnect } from "react-redux-firebase";
+import { compose } from "redux";
 import { Grid } from "semantic-ui-react";
 import EventDetailedChat from "./EventDetailedChat";
 import EventDetailedHeader from "./EventDetailedHeader";
@@ -8,6 +9,7 @@ import EventDetailedInfo from "./EventDetailedInfo";
 import EventDetailedSidebar from "./EventDetailedSidebar";
 import { objectToArray } from "../../../app/common/util/helpers";
 import { goingToEvent, cancelGoingToEvent } from "../../user/userActions";
+import { addEventComment } from "../eventActions";
 
 class EventDetailedPage extends Component {
   async componentDidMount() {
@@ -21,7 +23,13 @@ class EventDetailedPage extends Component {
   }
 
   render() {
-    const { event, auth, goingToEvent, cancelGoingToEvent } = this.props;
+    const {
+      event,
+      auth,
+      goingToEvent,
+      cancelGoingToEvent,
+      addEventComment,
+    } = this.props;
     const attendees =
       event && event.attendees && objectToArray(event.attendees);
     const isHost = event.hostUid === auth.uid;
@@ -37,7 +45,10 @@ class EventDetailedPage extends Component {
             cancelGoingToEvent={cancelGoingToEvent}
           />
           <EventDetailedInfo event={event} />
-          <EventDetailedChat />
+          <EventDetailedChat
+            addEventComment={addEventComment}
+            eventId={event.id}
+          />
         </Grid.Column>
         <Grid.Column width={6}>
           <EventDetailedSidebar attendees={attendees} />
@@ -61,11 +72,14 @@ const mapStateToProps = state => {
 const actions = {
   goingToEvent,
   cancelGoingToEvent,
+  addEventComment,
 };
 
-export default withFirestore(
+export default compose(
+  withFirestore,
   connect(
     mapStateToProps,
     actions,
-  )(EventDetailedPage),
-);
+  ),
+  firebaseConnect(props => [`event_chat/${props.match.params.id}`]),
+)(EventDetailedPage);
