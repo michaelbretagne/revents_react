@@ -23,3 +23,5 @@ yarn-error.log*
 
 .eslintrc
 .vscode
+
+functions/node_modules/**
