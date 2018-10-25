@@ -22,7 +22,7 @@ exports.createActivity = functions.firestore
 
     console.log(newEvent);
 
-    const activity = newActivity("newEvent", newEvent, eventId);
+    const activity = newActivity("newEvent", newEvent, event.id);
 
     console.log(activity);
 
@@ -55,7 +55,8 @@ exports.cancelActivity = functions.firestore
       return false;
     }
 
-    const activity = newActivity("cancelledEvent", updatedEvent, context.params.eventId);
+    const activity = newActivity(
+      "cancelledEvent", updatedEvent, context.params.eventId);
 
     console.log({ activity });
 
