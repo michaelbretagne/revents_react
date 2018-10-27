@@ -205,3 +205,28 @@ export const getUserEvents = (userUid, activeTab) => {
     }
   };
 };
+
+export const followUser = userToFollow => {
+  return async (dispatch, getState, { getFirestore }) => {
+    const firestore = getFirestore();
+    const user = firestore.auth().currentUser;
+    const following = {
+      city: userToFollow.city || "Unknown City",
+      displayName: userToFollow.displayName,
+      photoURL: userToFollow.photoURL || "/assets/user.png",
+    };
+
+    try {
+      await firestore.set(
+        {
+          collection: "users",
+          doc: user.uid,
+          subcollections: [{ collection: "following", doc: userToFollow.id }],
+        },
+        following,
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  };
+};

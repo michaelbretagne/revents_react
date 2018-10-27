@@ -10,7 +10,7 @@ import UserDetailedPhotos from "./UserDetailedPhotos";
 import UserDetailedEvents from "./UserDetailedEvents";
 import LoadingComponent from "../../../app/layout/LoadingComponent";
 import { userDetailedQuery } from "../userQueries";
-import { getUserEvents } from "../userActions";
+import { getUserEvents, followUser } from "../userActions";
 
 class UserDetailedPage extends Component {
   async componentDidMount() {
@@ -30,6 +30,7 @@ class UserDetailedPage extends Component {
       requesting,
       events,
       eventsLoading,
+      followUser,
     } = this.props;
     const isCurrentUser = auth.uid === match.params.id;
     const loading = Object.values(requesting).some(a => a === true);
@@ -38,7 +39,11 @@ class UserDetailedPage extends Component {
       <Grid>
         <UserDetailedHeader profile={profile} />
         <UserDetailedDescription profile={profile} />
-        <UserDetailedSidebar isCurrentUser={isCurrentUser} />
+        <UserDetailedSidebar
+          isCurrentUser={isCurrentUser}
+          followUser={followUser}
+          profile={profile}
+        />
         {photos && photos.length > 0 && <UserDetailedPhotos photos={photos} />}
         <UserDetailedEvents
           events={events}
@@ -76,6 +81,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const actions = {
   getUserEvents,
+  followUser,
 };
 
 export default compose(
