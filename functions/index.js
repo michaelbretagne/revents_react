@@ -99,3 +99,20 @@ exports.userFollowing = functions.firestore
         .set(follower);
     });
   });
+
+  exports.unfollowUser = functions.firestore
+  .document("users/{followerUid}/following/{followingUid}")
+  .onDelete((event, context) => {
+    return admin
+      .firestore()
+      .collection("users")
+      .doc(context.params.followingUid)
+      .collection("followers")
+      .delete()
+      .then(docRef => {
+        return console.log("doc deleted");
+      })
+      .catch(err => {
+        return console.log(err);
+      });
+  });

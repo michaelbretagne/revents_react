@@ -10,7 +10,7 @@ import UserDetailedPhotos from "./UserDetailedPhotos";
 import UserDetailedEvents from "./UserDetailedEvents";
 import LoadingComponent from "../../../app/layout/LoadingComponent";
 import { userDetailedQuery } from "../userQueries";
-import { getUserEvents, followUser } from "../userActions";
+import { getUserEvents, followUser, unfollowUser } from "../userActions";
 
 class UserDetailedPage extends Component {
   async componentDidMount() {
@@ -31,6 +31,7 @@ class UserDetailedPage extends Component {
       events,
       eventsLoading,
       followUser,
+      unfollowUser,
       following,
     } = this.props;
     const isCurrentUser = auth.uid === match.params.id;
@@ -44,6 +45,7 @@ class UserDetailedPage extends Component {
         <UserDetailedSidebar
           isCurrentUser={isCurrentUser}
           followUser={followUser}
+          unfollowUser={unfollowUser}
           isFollowing={isFollowing}
           profile={profile}
         />
@@ -86,6 +88,7 @@ const mapStateToProps = (state, ownProps) => {
 const actions = {
   getUserEvents,
   followUser,
+  unfollowUser,
 };
 
 export default compose(

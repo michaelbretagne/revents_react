@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 const UserDetailedSidebar = ({
   isCurrentUser,
   followUser,
+  unfollowUser,
   profile,
   isFollowing,
 }) => {
@@ -33,7 +34,15 @@ const UserDetailedSidebar = ({
             />
           )}
         {!isCurrentUser &&
-          isFollowing && <Button color="teal" fluid basic content="Unfollow" />}
+          isFollowing && (
+            <Button
+              onClick={() => unfollowUser(profile)}
+              color="teal"
+              fluid
+              basic
+              content="Unfollow"
+            />
+          )}
       </Segment>
     </Grid.Column>
   );
