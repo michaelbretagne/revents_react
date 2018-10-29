@@ -31,8 +31,10 @@ class UserDetailedPage extends Component {
       events,
       eventsLoading,
       followUser,
+      following,
     } = this.props;
     const isCurrentUser = auth.uid === match.params.id;
+    const isFollowing = !isEmpty(following);
     const loading = Object.values(requesting).some(a => a === true);
     if (loading) return <LoadingComponent inverted={true} />;
     return (
@@ -42,6 +44,7 @@ class UserDetailedPage extends Component {
         <UserDetailedSidebar
           isCurrentUser={isCurrentUser}
           followUser={followUser}
+          isFollowing={isFollowing}
           profile={profile}
         />
         {photos && photos.length > 0 && <UserDetailedPhotos photos={photos} />}
@@ -76,6 +79,7 @@ const mapStateToProps = (state, ownProps) => {
     auth: state.firebase.auth,
     photos: state.firestore.ordered.photos,
     requesting: state.firestore.status.requesting,
+    following: state.firestore.ordered.following,
   };
 };
 
@@ -89,5 +93,5 @@ export default compose(
     mapStateToProps,
     actions,
   ),
-  firestoreConnect(props => userDetailedQuery(props)),
+  firestoreConnect(userDetailedQuery),
 )(UserDetailedPage);
