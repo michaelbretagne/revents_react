@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { withFirestore, firebaseConnect, isEmpty } from "react-redux-firebase";
 import { compose } from "redux";
 import { Grid } from "semantic-ui-react";
+import { toastr } from "react-redux-toastr";
 import EventDetailedChat from "./EventDetailedChat";
 import EventDetailedHeader from "./EventDetailedHeader";
 import EventDetailedInfo from "./EventDetailedInfo";
@@ -18,6 +19,11 @@ import { openModal } from "../../modals/modalActions";
 class EventDetailedPage extends Component {
   async componentDidMount() {
     const { firestore, match } = this.props;
+    let event = await firestore.get(`events/${match.params.id}`);
+    if (!event.exists) {
+      toastr.error("Not found", "This is not the event you are looking for");
+      this.props.history.push("/error");
+    }
     await firestore.setListener(`events/${match.params.id}`);
   }
 
