@@ -53,6 +53,7 @@ class App extends Component {
                       component={UserIsAuthenticated(EventForm)}
                     />
                     <Route path="/error" component={NotFound} />
+                    <Route component={NotFound} />
                   </Switch>
                 </Container>
               </div>
