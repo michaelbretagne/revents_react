@@ -125,5 +125,9 @@ export default compose(
     mapStateToProps,
     actions,
   ),
-  firebaseConnect(props => [`event_chat/${props.match.params.id}`]),
+  firebaseConnect(
+    props =>
+      props.auth.isLoaded &&
+      !props.auth.isEmpty && [`event_chat/${props.match.params.id}`],
+  ),
 )(EventDetailedPage);
