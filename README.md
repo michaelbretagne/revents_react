@@ -51,9 +51,9 @@ The web app can be seen live [here](https://revents-e29f3.firebaseapp.com/events
 ## Screenshots:
 
   <p align="center" margin="10px">
-    <img src="./public/assets/screenshot1" alt="screenshot 1"/>
+    <img src="./public/assets/screenshot1.png" alt="screenshot 1"/>
   </p>
 
   <p align="center" margin="10px">
-    <img src="./public/assets/screenshot2" alt="screenshot 1"/>
+    <img src="./public/assets/screenshot2.png" alt="screenshot 1"/>
   </p>
