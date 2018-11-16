@@ -1,6 +1,6 @@
 # revents_react
 
-I built this website as a part of an **online course** that addresses few **challenges to tackle**. This course was **created** and **designed** by **Neil Cummings** and can be found on [Udemy](https://www.udemy.com/build-an-app-with-react-redux-and-firestore-from-scratch/learn/v4/overview).
+I built this website as a part of an **online course**. This course was **created** and **designed** by **Neil Cummings** and can be found on [Udemy](https://www.udemy.com/build-an-app-with-react-redux-and-firestore-from-scratch/learn/v4/overview).
 
 ## App description:
 
@@ -44,7 +44,7 @@ Users can **follow/unfollow** others users and also **chat instantaneously**.
 - **Google maps** and **Places autocomplete** integration.
 - **Photo uploading** using **drag and drop**, with **resizing** and **cropping** of the images before upload.
 - **Live chat** system
-- View **past**, **future** and **hosted events**.
+- View/Filter **past**, **future** and **hosted events**.
 
 The web app can be seen live [here](https://revents-e29f3.firebaseapp.com/events).
 
